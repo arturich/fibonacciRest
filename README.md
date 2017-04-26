@@ -1,152 +1,25 @@
-Fibonacci serie
-
-This project has the purpose to expose a Restful server with Fibonacci series functionality.
-In order to get this project running in your computer, you will need:
-•	PHP 5.4 or greater
-•	MySQL 5.6.32 (Optional, you can modify it to use variables).
-•	Jacwright RESTServer v1.0.1  https://github.com/jacwright/RestServer (included).
-
-The main functionality is in FibonacciController.php:
-Has three principal methods:
-<?php
-
-use \RestServer\RestException;
-require_once('../model/DB_Fibonacci.inc.php');
-
-class FibonacciController
-{
-    /**
-     * Returns the welcome to the fibonacci restfull api
-     *
-     * @url GET /
-     */
-    public function test()
-    {
-        return "Welcome to the Fibonacci Series Restul Api";
-    }
-
-	
-	public function authorize() 
-	{
-		return true;
-	}
-
-    /**
-     * Gets the serie of a specific number
-     *
-     * @url GET /fserie/$nm
-     */
-    public function getSerie($nm = null)
-    {
-        // if ($id) {
-        //     $user = User::load($id); // possible user loading method
-        // } else {
-        //     $user = $_SESSION['user'];
-        // }
-		if($nm < 0 || $nm > 100)
-		{
-			//throw new RestException(406, "Invalid number");
-			$response = array("code" => "Error", "result" => "Invalid number");
-		}
-		else
-		{
-			$serie = DB_Fibonacci::findSerie($nm);
-			if(is_null($serie) || trim($serie) == "")
-				$response = array("code" => "Error", "result" => "No serie yet");
-			else
-				$response = array("code" => "OK", "result" => $serie);			
-		}
-		return $response; 
-    }
-
-    /**
-     * Saves a valid number from 0 to 100 series to the database
-     *
-     * @url POST /number/
-     * @url PUT /number/$nm
-     */
-    public function saveSerie($nm = null, $data)
-    {	
-		 $nm =  $_POST['nm'];
-
-		if($nm < 0 || $nm > 100)
-		{
-			//throw new RestException(406, "Invalid number");
-			$response = array("code" => "Error", "result" => "Invalid number");
-		}
-		else
-		{
-			$serie =  $this->doFibonacci($nm);
-			DB_Fibonacci::saveSerie($nm,$serie);
-			$response = array("code" => "OK", "result" => $serie);
-		}	
-         
-        return $response; // returning the updated or newly created user object
-    }
-
-
-
-	
-	/**
-     * Deletes a number
-     * 
-     * @url DELETE /delete/$nm
-     */
-    public function deleteSerie($nm) {
-			
-		if($nm < 0 || $nm > 100)
-		{
-			//throw new RestException(406, "Invalid number");
-			$response = array("code" => "Error", "result" => "Invalid number");
-		}
-		else
-		{			
-			$result = DB_Fibonacci::deleteSerie($nm);
-			if(is_null($result))
-				$response = array("code" => "Error", "result" => "No serie exist");
-			else
-				$response = array("code" => "OK", "result" => $result);
-		}	
-         
-        return $response; 
-
-    }
-	
-	function doFibonacci($n)
-	{	 
-	  $serie = "";	
-	  $first = 0;
-	  $second = 1;
-	  $serie  = $first.' '.$second.' ';
-	  	 
-	  for($i = 2; $i < $n; $i++){
-	 
-		$third = $first + $second;
-	 
-		$serie  .= $third.' ';
-	 
-		$first = $second;
-		$second = $third;
-	 
-		}
-		return $serie;
-	}
-}
-
-saveSerie(). This method will receive a number via POST, to your site, for instance www.yoursite.com/number and pass the parameter as nm and it will store the number and the series, and return the series with a status of Ok, a valid number will be in the range o 0 to 100.
-getSerie(). This method will query the number that you pass in a GET method, and if the series for that number is already store in the database will retrieve the information for you, if it doesn’t exist, will throw an error. The way you will consult it is for instance www.yoursite.com/fserie/5 
-deleteSerie(). This method will act with DELETE, and will receive a number and delete the number and the serie from the database, if the number doesn’t exist will show you an error. You can delete a serie by using for instance www.yoursite.com/delete/5
-If you want to use the database functionality, you will need to create a database and a table:
-
-CREATE TABLE IF NOT EXISTS `fibonacci_t` (
-  `number` int(11) NOT NULL,
-  `serie` text NOT NULL,
-  `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`number`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
-
-Now in the model folder change DB_mysql.inc.php in the constructor set the $bd variable with the name or your database, set you $user and $password.
-
-An example that is currently running is in http://citalin.com/acce/test/fserie/20
-Enjoy.
+<p>This project has the purpose to expose a Restful server with Fibonacci series functionality.</p>
+<p>In order to get this project running in your computer, you will need:</p>
+<ul>
+<li>PHP 5.4 or greater</li>
+<li>MySQL 5.6.32 (Optional, you can modify it to use variables).</li>
+<li>Jacwright RESTServer v1.0.1 https://github.com/jacwright/RestServer (included).</li>
+</ul>
+<p>&nbsp;</p>
+<p>The main functionality is in FibonacciController.php:</p>
+<p>Has three principal methods:</p>
+<p>&nbsp;&lt;?php<br /><br />use \RestServer\RestException;<br />require_once('../model/DB_Fibonacci.inc.php');<br /><br />class FibonacciController<br />{<br />&nbsp;&nbsp;&nbsp; /**<br />&nbsp;&nbsp;&nbsp;&nbsp; * Returns the welcome to the fibonacci restfull api<br />&nbsp;&nbsp;&nbsp;&nbsp; *<br />&nbsp;&nbsp;&nbsp;&nbsp; * @url GET /<br />&nbsp;&nbsp;&nbsp;&nbsp; */<br />&nbsp;&nbsp;&nbsp; public function test()<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return "Welcome to the Fibonacci Series Restul Api";<br />&nbsp;&nbsp;&nbsp; }<br /><br />&nbsp;&nbsp; &nbsp;<br />&nbsp;&nbsp; &nbsp;public function authorize() <br />&nbsp;&nbsp; &nbsp;{<br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;return true;<br />&nbsp;&nbsp; &nbsp;}<br /><br />&nbsp;&nbsp;&nbsp; /**<br />&nbsp;&nbsp;&nbsp;&nbsp; * Gets the serie of a specific number<br />&nbsp;&nbsp;&nbsp;&nbsp; *<br />&nbsp;&nbsp;&nbsp;&nbsp; * @url GET /fserie/$nm<br />&nbsp;&nbsp;&nbsp;&nbsp; */<br />&nbsp;&nbsp;&nbsp; public function getSerie($nm = null)<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // if ($id) {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //&nbsp;&nbsp;&nbsp;&nbsp; $user = User::load($id); // possible user loading method<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // } else {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //&nbsp;&nbsp;&nbsp;&nbsp; $user = $_SESSION['user'];<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // }<br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;if($nm &lt; 0 || $nm &gt; 100)<br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;{<br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;//throw new RestException(406, "Invalid number");<br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;$response = array("code" =&gt; "Error", "result" =&gt; "Invalid number");<br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;}<br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;else<br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;{<br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;$serie = DB_Fibonacci::findSerie($nm);<br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;if(is_null($serie) || trim($serie) == "")<br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;$response = array("code" =&gt; "Error", "result" =&gt; "No serie yet");<br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;else<br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;$response = array("code" =&gt; "OK", "result" =&gt; $serie);&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;<br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;}<br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;return $response; <br />&nbsp;&nbsp;&nbsp; }<br /><br />&nbsp;&nbsp;&nbsp; /**<br />&nbsp;&nbsp;&nbsp;&nbsp; * Saves a valid number from 0 to 100 series to the database<br />&nbsp;&nbsp;&nbsp;&nbsp; *<br />&nbsp;&nbsp;&nbsp;&nbsp; * @url POST /number/<br />&nbsp;&nbsp;&nbsp;&nbsp; * @url PUT /number/$nm<br />&nbsp;&nbsp;&nbsp;&nbsp; */<br />&nbsp;&nbsp;&nbsp; public function saveSerie($nm = null, $data)<br />&nbsp;&nbsp;&nbsp; {&nbsp;&nbsp; &nbsp;<br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp; $nm =&nbsp; $_POST['nm'];<br /><br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;if($nm &lt; 0 || $nm &gt; 100)<br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;{<br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;//throw new RestException(406, "Invalid number");<br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;$response = array("code" =&gt; "Error", "result" =&gt; "Invalid number");<br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;}<br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;else<br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;{<br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;$serie =&nbsp; $this-&gt;doFibonacci($nm);<br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;DB_Fibonacci::saveSerie($nm,$serie);<br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;$response = array("code" =&gt; "OK", "result" =&gt; $serie);<br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;}&nbsp;&nbsp; &nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return $response; // returning the updated or newly created user object<br />&nbsp;&nbsp;&nbsp; }<br /><br /><br /><br />&nbsp;&nbsp; &nbsp;<br />&nbsp;&nbsp; &nbsp;/**<br />&nbsp;&nbsp;&nbsp;&nbsp; * Deletes a number<br />&nbsp;&nbsp;&nbsp;&nbsp; * <br />&nbsp;&nbsp;&nbsp;&nbsp; * @url DELETE /delete/$nm<br />&nbsp;&nbsp;&nbsp;&nbsp; */<br />&nbsp;&nbsp;&nbsp; public function deleteSerie($nm) {<br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;<br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;if($nm &lt; 0 || $nm &gt; 100)<br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;{<br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;//throw new RestException(406, "Invalid number");<br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;$response = array("code" =&gt; "Error", "result" =&gt; "Invalid number");<br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;}<br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;else<br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;{&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;<br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;$result = DB_Fibonacci::deleteSerie($nm);<br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;if(is_null($result))<br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;$response = array("code" =&gt; "Error", "result" =&gt; "No serie exist");<br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;else<br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;$response = array("code" =&gt; "OK", "result" =&gt; $result);<br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;}&nbsp;&nbsp; &nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return $response; <br /><br />&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp; &nbsp;<br />&nbsp;&nbsp; &nbsp;function doFibonacci($n)<br />&nbsp;&nbsp; &nbsp;{&nbsp;&nbsp; &nbsp; <br />&nbsp;&nbsp; &nbsp;&nbsp; $serie = "";&nbsp;&nbsp; &nbsp;<br />&nbsp;&nbsp; &nbsp;&nbsp; $first = 0;<br />&nbsp;&nbsp; &nbsp;&nbsp; $second = 1;<br />&nbsp;&nbsp; &nbsp;&nbsp; $serie&nbsp; = $first.' '.$second.' ';<br />&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp; <br />&nbsp;&nbsp; &nbsp;&nbsp; for($i = 2; $i &lt; $n; $i++){<br />&nbsp;&nbsp; &nbsp; <br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;$third = $first + $second;<br />&nbsp;&nbsp; &nbsp; <br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;$serie&nbsp; .= $third.' ';<br />&nbsp;&nbsp; &nbsp; <br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;$first = $second;<br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;$second = $third;<br />&nbsp;&nbsp; &nbsp; <br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;}<br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;return $serie;<br />&nbsp;&nbsp; &nbsp;}<br />}</p>
+<p>saveSerie(). This method will receive a number via POST, to your site, for instance <a href="http://www.yoursite.com/number">www.yoursite.com/number</a> and pass the parameter as nm and it will store the number and the series, and return the series with a status of Ok, a valid number will be in the range o 0 to 100.</p>
+<p>getSerie(). This method will query the number that you pass in a GET method, and if the series for that number is already store in the database will retrieve the information for you, if it doesn&rsquo;t exist, will throw an error. The way you will consult it is for instance <a href="http://www.yoursite.com/fserie/5">www.yoursite.com/fserie/5</a></p>
+<p>deleteSerie(). This method will act with DELETE, and will receive a number and delete the number and the serie from the database, if the number doesn&rsquo;t exist will show you an error. You can delete a serie by using for instance <a href="http://www.yoursite.com/delete/5">www.yoursite.com/delete/5</a></p>
+<p>If you want to use the database functionality, you will need to create a database and a table:</p>
+<p>CREATE TABLE IF NOT EXISTS `fibonacci_t` (</p>
+<p>&nbsp; `number` int(11) NOT NULL,</p>
+<p>&nbsp; `serie` text NOT NULL,</p>
+<p>&nbsp; `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,</p>
+<p>&nbsp; PRIMARY KEY (`number`)</p>
+<p>) ENGINE=MyISAM DEFAULT CHARSET=latin1;</p>
+<p>Now in the model folder change DB_mysql.inc.php in the constructor set the $bd variable with the name or your database, set you $user and $password.</p>
+<p>&nbsp;</p>
+<p>An example that is currently running is in <a href="http://citalin.com/acce/test/fserie/20">http://citalin.com/acce/test/fserie/20</a></p>
+<p>Enjoy.</p>
