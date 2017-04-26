@@ -1,4 +1,3 @@
-# fibonacciRest
 Fibonacci serie
 
 This project has the purpose to expose a Restful server with Fibonacci series functionality.
