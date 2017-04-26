@@ -40,7 +40,7 @@
 
 		de esta clase, se ejecutar� esta funci�n */
 
-		function DB_mysql($bd = "citalinc_fibonacci", $host = "localhost", $user = "citalinc_fibona", $pass = "fibona")
+		function DB_mysql($bd = "your_bd", $host = "localhost", $user = "user", $pass = "pass")
 		{
 
 			$this->Database = $bd;
