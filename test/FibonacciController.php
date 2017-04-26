@@ -28,11 +28,7 @@ class FibonacciController
      */
     public function getSerie($nm = null)
     {
-        // if ($id) {
-        //     $user = User::load($id); // possible user loading method
-        // } else {
-        //     $user = $_SESSION['user'];
-        // }
+
 		if($nm < 0 || $nm > 100)
 		{
 			//throw new RestException(406, "Invalid number");
@@ -71,7 +67,7 @@ class FibonacciController
 			$response = array("code" => "OK", "result" => $serie);
 		}	
          
-        return $response; // returning the updated or newly created user object
+        return $response; // returning the updated
     }
 
 
